@@ -1,0 +1,30 @@
+Package: evalProbForecast
+Title: Evaluate the performance between two probabilistic forecasts 
+Version: 0.0.0.9000
+Authors@R: c(
+    person(given = "Chi-Kuang",
+           family = "Yeh",
+           role = c("aut", "cre"),
+           email = "chi-kuang.yeh@uwaterloo.ca"),
+    person(given = "Gregory",
+           family = "Rice",
+           role =  c("ctb", "ths")),
+    person(given = "Joel A.",
+           family = "Dubin",
+           role =  c("ctb", "ths"))     
+     )
+Description: This package provides the tools to evaluate the performance between two sets of probabilistic forecasts, under the square norm, along with the graphical representation.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+Imports:
+    dplyr (>= 1.0.1),
+    ggplot2 (>= 3.3.2),
+    stats (>= 4.0.2)
+RoxygenNote: 7.1.1
+Suggests: 
+    knitr (>= 1.28.0),
+    rmarkdown (>= 2.1.0),
+    gridExtra (>= 2.3.0)
+
