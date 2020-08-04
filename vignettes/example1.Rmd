@@ -1,0 +1,195 @@
+---
+title: "Example 1"
+author: | 
+  | Health Data Science Lab
+  | University of Waterloo
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_document:
+    toc: yes
+    toc_float: true
+    theme: readable
+    highlight: tango
+  rmarkdown::html_vignette:
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{evalProbForecast}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+options(digits = 3)
+```
+
+
+```{r load, message = F}
+# required dependencies
+require(evalProbForecast)
+
+require(dplyr)
+require(tidyr)
+require(ggplot2)
+require(gridExtra)
+require(RSpectra)
+require(sde)
+```
+
+```{r}
+L <- function(x, y){
+  return ( (x - y)^2 ) 
+}
+```
+
+```{r}
+nsamp <- 100 # number of in-game events
+ngame <- 100 # number of games
+
+#' Parameter for generating the eigenvalues, and p-values
+D <- 10 # Number of eigenvalues to keep
+N_MC <- 5000 # for simulating the p-value
+
+library(rlist)
+
+L <- function(x, y) {
+  return((x - y) ^ 2)
+}
+
+# New ---------------------------------------------------------------------
+
+df_gen <- function(N, Ngame) {
+  a = 1.0
+  b = 0.2
+  # a = 1.0; b = 1.5
+  uu <- a * runif(Ngame,-1,+1) + b
+  xt <- sapply(1:Ngame, function(x) {
+    tt <- seq(0, 1, 1 / N)
+    wt <- sde::BM(x = 0,
+                  t0 = 0,
+                  T = 1,
+                  N = N) %>% as.numeric() ##
+    #' @BM
+    uu[x] * tt + wt
+  })  # nsamp x ngame
+  
+  Yn <- ifelse(xt[N + 1,] > 0, 1, 0)
+  
+  
+  w1 <- sapply(1:Ngame, function(x) {
+    # Sim.DiffProc::OU(N = N, t0 = 0, T = 1, x0 = 0, mu = rexp(1), sigma = 1) %>% as.numeric()
+    sde::BM(x = 0,
+            t0 = 0,
+            T = 1,
+            N = N) %>% as.numeric()
+  })
+  w2 <- sapply(1:Ngame, function(x) {
+    sde::BM(x = 0,
+            t0 = 0,
+            T = 1,
+            N = N) %>% as.numeric()
+  })
+  
+  lapply(1:(N + 1), function(k) {
+    tibble(
+      game = 1:Ngame,
+      u = uu,
+      Xt = xt[k,],
+      grid = (k - 1) / N,
+      Y = Yn,
+      W1 = w1[k,],
+      W2 = w2[k,]
+    ) # each sample point
+  }) %>% list.rbind() %>% mutate(
+    signXt = sign(Xt),
+    phat_A = pnorm(u * (1 - grid) + Xt + W1,
+                   sd = sqrt(1 - grid)),
+    phat_B = pnorm(u * (1 - grid) + Xt + W2,
+                   sd = sqrt(1 - grid))
+  )
+}
+
+
+# Data generation ---------------------------------------------------------=
+df_equ <-  df_gen(N = nsamp, Ngame = ngame)  %>%
+  group_by(grid) %>%
+  mutate(
+    p_bar_12 = mean(phat_A - phat_B),
+    diff_A = phat_A - phat_B,
+    diff_B = phat_A - phat_B - p_bar_12
+  ) %>% ungroup()
+
+# Apply our test ----------------------------------------------------------
+
+Z <- df_equ %>% group_by(grid) %>%
+  summarise(delta_n = mean(L(phat_A, Y) - L(phat_B, Y))) %>%
+  {
+    sum((.)$delta_n ^ 2) / nsamp * ngame
+  }
+
+temp <- df_equ %>% group_by(grid) %>% group_split()
+
+eigV_hat <- lapply(1:nsamp, function(i) {
+  sapply(1:nsamp, function(j) {
+    as.numeric(temp[[i]]$diff_A %*% temp[[j]]$diff_A / ngame)
+  })
+}) %>% list.rbind %>% {
+  RSpectra::eigs_sym(
+    A = (.),
+    k = D,
+    which = "LM",
+    opts = list(retvec = FALSE)
+  )$values
+} %>%
+  {
+    (.) / nsamp
+  }
+
+
+
+
+
+eigV_til <- lapply(1:nsamp, function(i) {
+  sapply(1:nsamp, function(j) {
+    as.numeric(temp[[i]]$diff_B %*% temp[[j]]$diff_B / ngame)
+  })
+}) %>% list.rbind %>% {
+  RSpectra::eigs_sym(
+    A = (.),
+    k = D,
+    which = "LM",
+    opts = list(retvec = FALSE)
+  )$values
+} %>%
+  {
+    (.) / nsamp
+  }
+
+
+MC_hat <- sapply(1:N_MC, function(x) {
+  crossprod(eigV_hat, rchisq(D, df = 1))
+})
+
+q_90_hat <- quantile(MC_hat, 0.90)
+q_95_hat <- quantile(MC_hat, 0.95)
+q_99_hat <- quantile(MC_hat, 0.99)
+
+MC_til <- sapply(1:N_MC, function(x) {
+  crossprod(eigV_til, rchisq(D, df = 1))
+})
+
+q_90_til <- quantile(MC_til, 0.90)
+q_95_til <- quantile(MC_til, 0.95)
+q_99_til <- quantile(MC_til, 0.99)
+
+tibble(
+  type  = c("non-center", "center"),
+  "90%" = c(q_90_hat, q_90_til),
+  "95%" = c(q_95_hat, q_95_til),
+  "99%" = c(q_99_hat, q_99_til))
+```
+
+
