@@ -1,7 +1,7 @@
 ---
 title: "Example 1"
 author: | 
-  | Health Data Science Lab
+  | Chi-Kuang Yeh, Gregory Rice, Joel A. Dubin
   | University of Waterloo
 date: "`r Sys.Date()`"
 output:
@@ -118,8 +118,8 @@ df_equ <-  df_gen(N = nsamp, Ngame = ngame)  %>%
   group_by(grid) %>%
   mutate(
     p_bar_12 = mean(phat_A - phat_B),
-    diff_A = phat_A - phat_B,
-    diff_B = phat_A - phat_B - p_bar_12
+    diff_non_cent = phat_A - phat_B,
+    diff_cent = phat_A - phat_B - p_bar_12
   ) %>% ungroup()
 
 # Apply our test ----------------------------------------------------------
@@ -134,7 +134,7 @@ temp <- df_equ %>% group_by(grid) %>% group_split()
 
 eigV_hat <- lapply(1:nsamp, function(i) {
   sapply(1:nsamp, function(j) {
-    as.numeric(temp[[i]]$diff_A %*% temp[[j]]$diff_A / ngame)
+    as.numeric(temp[[i]]$diff_non_cent %*% temp[[j]]$diff_non_cent / ngame)
   })
 }) %>% list.rbind %>% {
   RSpectra::eigs_sym(
@@ -154,7 +154,7 @@ eigV_hat <- lapply(1:nsamp, function(i) {
 
 eigV_til <- lapply(1:nsamp, function(i) {
   sapply(1:nsamp, function(j) {
-    as.numeric(temp[[i]]$diff_B %*% temp[[j]]$diff_B / ngame)
+    as.numeric(temp[[i]]$diff_cent %*% temp[[j]]$diff_cent / ngame)
   })
 }) %>% list.rbind %>% {
   RSpectra::eigs_sym(
@@ -187,9 +187,48 @@ q_99_til <- quantile(MC_til, 0.99)
 
 tibble(
   type  = c("non-center", "center"),
+  Z = rep(Z, 2),
   "90%" = c(q_90_hat, q_90_til),
   "95%" = c(q_95_hat, q_95_til),
   "99%" = c(q_99_hat, q_99_til))
 ```
 
+
+```{r use functions}
+## This might not work, check it later
+to_center <- FALSE
+eig_try <- function(cent = FALSE, df, ngame, nsamp){
+  diff <- ifelse(cent, "diff_cent", "diff_non_cent")
+
+  eigV <- lapply(1:nsamp, function(i){
+      sapply(1:nsamp, function(j){
+        (df[[i]] %>% pull(!!sym(diff))) %*% (df[[j]] %>% pull(!!sym(diff))) /ngame %>% as.numeric()
+      })
+    }) %>% rlist::list.rbind() %>% {RSpectra::eigs_sym(A = (.), k = D, which = "LM",
+                                                       opts = list(retvec = FALSE))$values} %>%
+    {(.)/nsamp}
+  return(eigV)
+}
+eigg <- eig_try(df = temp, ngame = ngame, nsamp = nsamp)
+
+
+set.seed(520)
+MC <- sapply(1:N_MC, function(x) {
+  crossprod(eigg, stats::rchisq(D, df = 1))
+})
+
+  # p_val <- 1 - stats::ecdf(MC)(Z)
+  # 
+  # return(c(Z, p_val))
+
+quan <- sapply(c(0.90, 0.95, 0.99), function(x)quantile(MC, x))
+
+tibble(
+  type = ifelse(to_center, "center", "non-center"),
+  Z = Z,
+  "90%" = c(quan[1]),
+  "95%" = c(quan[2]),
+  "99%" = c(quan[3])
+)
+```
 
