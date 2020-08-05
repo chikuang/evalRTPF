@@ -19,6 +19,7 @@ cal_prob_diff <- function(df, pA = "phat_1", pB = "phat_2", grid = "grid", cente
   phat_2 <- as.symbol(pB)
   grid <- as.symbol(grid)
 
+  ## need to replace p_bar_12 from somewhere.
   group_by(df, grid) %>% mutate(p_bar_12 = mean(phat_1, phat_2)) %>% ungroup() %>%
     mutate(diff_prob = ifelse(center, phat_1 - phat_2 - p_bar_12, phat_1 - phat_2))
 }

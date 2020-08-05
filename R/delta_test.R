@@ -28,27 +28,16 @@ delta_test <- function(df, D = 10, N_MC = 5000, center = FALSE,
 
   temp <- group_by(df, grid) %>% group_split()
 
+  ## This might not work, check it later
+  diff <- ifelse(center, "diff_B", "diff_A")
 
-  if(!center){
-    eigV <- lapply(1:nsamp, function(i){
-      sapply(1:nsamp, function(j){
-        as.numeric(temp[[i]]$diff_A %*% temp[[j]]$diff_A /ngame)
-      })
-    }) %>% rlist::list.rbind() %>% {RSpectra::eigs_sym(A = (.), k = D, which = "LM",
-                                                       opts = list(retvec = FALSE))$values} %>%
-      {(.)/nsamp}
-
-
-  } else{
-    eigV <- lapply(1:nsamp, function(i){
-      sapply(1:nsamp, function(j){
-        as.numeric(temp[[i]]$diff_B %*% temp[[j]]$diff_B /ngame)
-      })
-    }) %>% rlist::list.rbind() %>% {RSpectra::eigs_sym(A = (.), k = D, which = "LM",
-                                                       opts = list(retvec = FALSE))$values} %>%
-      {(.)/nsamp}
-  }
-
+  eigV <- lapply(1:nsamp, function(i){
+    sapply(1:nsamp, function(j){
+      (temp[[i]] %>% pull(!!sym(diff))) %*% (temp[[j]] %>% pull(!!sym(diff))) /ngame %>% as.numeric()
+    })
+  }) %>% rlist::list.rbind() %>% {RSpectra::eigs_sym(A = (.), k = D, which = "LM",
+                                                     opts = list(retvec = FALSE))$values} %>%
+    {(.)/nsamp}
 
   set.seed(520)
   MC <- sapply(1:N_MC, function(x){
@@ -56,5 +45,5 @@ delta_test <- function(df, D = 10, N_MC = 5000, center = FALSE,
   })
   p_val <- 1 - stats::ecdf(MC)(Z)
 
-  return(p_val)
+  return(c(Z, p_val))
 }

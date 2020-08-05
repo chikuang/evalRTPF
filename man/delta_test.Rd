@@ -8,7 +8,7 @@ delta_test(
   df,
   D = 10,
   N_MC = 5000,
-  center = TRUE,
+  center = FALSE,
   grid = "grid",
   pA = "phat_A",
   pB = "phat_B",
