@@ -194,9 +194,19 @@ tibble(
 ```
 
 
-```{r use functions}
+```{r function wrappers}
+
+calc_Z <- function(df, pA, pB, Y, grid, nsamp, ngame, L = function(x,y) (x-y)^2){
+  
+  df %>% group_by(grid) %>%
+    summarise(delta_n = mean(L(!!sym(pA), !!sym(Y)) - L(!!sym(pB), !!sym(Y)))) %>%
+    {sum((.)$delta_n ^ 2) / nsamp * ngame}
+}
+
+
 ## This might not work, check it later
 to_center <- FALSE
+
 eig_try <- function(cent = FALSE, df, ngame, nsamp){
   diff <- ifelse(cent, "diff_cent", "diff_non_cent")
 
@@ -207,28 +217,36 @@ eig_try <- function(cent = FALSE, df, ngame, nsamp){
     }) %>% rlist::list.rbind() %>% {RSpectra::eigs_sym(A = (.), k = D, which = "LM",
                                                        opts = list(retvec = FALSE))$values} %>%
     {(.)/nsamp}
+  
   return(eigV)
 }
+
+
+calc_pval <- function(eig, quan, n_MC){
+  set.seed(520)
+  n_eig <- length(eig)
+  MC <- sapply(1:n_MC, function(x) {
+    crossprod(eig, stats::rchisq(n_eig, df = 1))
+  })
+  
+  return(list(p_val = 1 - stats::ecdf(MC)(Z), 
+              quantile = quantile(MC, quan)))
+}
+
+ZZ <- calc_Z(df = df_equ, pA = "phat_A", pB = "phat_B", Y = "Y", nsamp = nsamp, ngame = ngame)
 eigg <- eig_try(df = temp, ngame = ngame, nsamp = nsamp)
+oh <- calc_pval(eig = eigg, quan = c(0.90, 0.95, 0.99), n_MC = N_MC)
 
-
-set.seed(520)
-MC <- sapply(1:N_MC, function(x) {
-  crossprod(eigg, stats::rchisq(D, df = 1))
-})
-
-  # p_val <- 1 - stats::ecdf(MC)(Z)
-  # 
-  # return(c(Z, p_val))
-
-quan <- sapply(c(0.90, 0.95, 0.99), function(x)quantile(MC, x))
+# p_val <- 1 - stats::ecdf(MC)(Z)
+# 
+# return(c(Z, p_val))
 
 tibble(
   type = ifelse(to_center, "center", "non-center"),
-  Z = Z,
-  "90%" = c(quan[1]),
-  "95%" = c(quan[2]),
-  "99%" = c(quan[3])
+  Z = ZZ,
+  "90%" = c(oh$quantile[1]),
+  "95%" = c(oh$quantile[2]),
+  "99%" = c(oh$quantile[3])
 )
 ```
 
