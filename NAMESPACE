@@ -2,6 +2,10 @@
 
 export(cal_prob_diff)
 export(delta_test)
+export(lin_interp)
 import(dplyr)
 import(ggplot2)
 import(tidyr)
+importFrom(stats,approx)
+importFrom(stats,ecdf)
+importFrom(stats,rchisq)

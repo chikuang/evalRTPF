@@ -4,12 +4,18 @@
 \alias{cal_prob_diff}
 \title{The difference in probability}
 \usage{
-cal_prob_diff(df, center = FALSE)
+cal_prob_diff(df, pA = "phat_1", pB = "phat_2", grid = "grid", center = FALSE)
 }
 \arguments{
 \item{df}{A tibble contains 2 sets of probability and respective time grid}
 
-\item{center}{Logical of whether to center the data or not}
+\item{pA}{TBA}
+
+\item{pB}{TBA}
+
+\item{grid}{TBA}
+
+\item{center}{Logical of whether to centre the data or not}
 }
 \value{
 A value of the test statistics and the associated p-value between two sets of real-time probabilistic forecasts
