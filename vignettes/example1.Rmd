@@ -27,7 +27,7 @@ options(digits = 3)
 ```
 
 
-```{r load, message = F}
+```{r load, message = F, include = FALSE}
 # required dependencies
 require(evalProbForecast)
 
@@ -39,7 +39,7 @@ require(RSpectra)
 require(sde)
 ```
 
-```{r}
+```{r, include = FALSE}
 L <- function(x, y){
   return ( (x - y)^2 ) 
 }
@@ -72,7 +72,6 @@ df_gen <- function(N, Ngame) {
                   t0 = 0,
                   T = 1,
                   N = N) %>% as.numeric() ##
-    #' @BM
     uu[x] * tt + wt
   })  # nsamp x ngame
   
@@ -80,7 +79,6 @@ df_gen <- function(N, Ngame) {
   
   
   w1 <- sapply(1:Ngame, function(x) {
-    # Sim.DiffProc::OU(N = N, t0 = 0, T = 1, x0 = 0, mu = rexp(1), sigma = 1) %>% as.numeric()
     sde::BM(x = 0,
             t0 = 0,
             T = 1,
@@ -114,7 +112,7 @@ df_gen <- function(N, Ngame) {
 
 
 # Data generation ---------------------------------------------------------=
-df_equ <-  df_gen(N = nsamp, Ngame = ngame)  %>%
+df_equ <-  df_gen(N = nsamp, Ngame = ngame) %>%
   group_by(grid) %>%
   mutate(
     p_bar_12 = mean(phat_A - phat_B),
@@ -126,9 +124,7 @@ df_equ <-  df_gen(N = nsamp, Ngame = ngame)  %>%
 
 Z <- df_equ %>% group_by(grid) %>%
   summarise(delta_n = mean(L(phat_A, Y) - L(phat_B, Y))) %>%
-  {
-    sum((.)$delta_n ^ 2) / nsamp * ngame
-  }
+  {sum((.)$delta_n ^ 2) / nsamp * ngame}
 
 temp <- df_equ %>% group_by(grid) %>% group_split()
 
@@ -195,51 +191,13 @@ tibble(
 
 
 ```{r function wrappers}
-
-calc_Z <- function(df, pA, pB, Y, grid, nsamp, ngame, L = function(x,y) (x-y)^2){
-  
-  df %>% group_by(grid) %>%
-    summarise(delta_n = mean(L(!!sym(pA), !!sym(Y)) - L(!!sym(pB), !!sym(Y)))) %>%
-    {sum((.)$delta_n ^ 2) / nsamp * ngame}
-}
-
-
-## This might not work, check it later
+library(evalProbForecast)
 to_center <- FALSE
 
-eig_try <- function(cent = FALSE, df, ngame, nsamp){
-  diff <- ifelse(cent, "diff_cent", "diff_non_cent")
-
-  eigV <- lapply(1:nsamp, function(i){
-      sapply(1:nsamp, function(j){
-        (df[[i]] %>% pull(!!sym(diff))) %*% (df[[j]] %>% pull(!!sym(diff))) /ngame %>% as.numeric()
-      })
-    }) %>% rlist::list.rbind() %>% {RSpectra::eigs_sym(A = (.), k = D, which = "LM",
-                                                       opts = list(retvec = FALSE))$values} %>%
-    {(.)/nsamp}
-  
-  return(eigV)
-}
-
-
-calc_pval <- function(eig, quan, n_MC){
-  set.seed(520)
-  n_eig <- length(eig)
-  MC <- sapply(1:n_MC, function(x) {
-    crossprod(eig, stats::rchisq(n_eig, df = 1))
-  })
-  
-  return(list(p_val = 1 - stats::ecdf(MC)(Z), 
-              quantile = quantile(MC, quan)))
-}
 
 ZZ <- calc_Z(df = df_equ, pA = "phat_A", pB = "phat_B", Y = "Y", nsamp = nsamp, ngame = ngame)
-eigg <- eig_try(df = temp, ngame = ngame, nsamp = nsamp)
-oh <- calc_pval(eig = eigg, quan = c(0.90, 0.95, 0.99), n_MC = N_MC)
-
-# p_val <- 1 - stats::ecdf(MC)(Z)
-# 
-# return(c(Z, p_val))
+eigg <- calc_eig(df = temp, n_eig = D, ngame = ngame, nsamp = nsamp, cent = to_center)
+oh <- calc_pval(Z, eig = eigg, quan = c(0.90, 0.95, 0.99), n_MC = N_MC)
 
 tibble(
   type = ifelse(to_center, "center", "non-center"),
