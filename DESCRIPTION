@@ -34,4 +34,3 @@ Suggests:
     gridExtra (>= 2.3.0),
     sde
 VignetteBuilder: knitr
-

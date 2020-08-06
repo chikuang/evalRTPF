@@ -126,7 +126,7 @@ Z <- df_equ %>% group_by(grid) %>%
   summarise(delta_n = mean(L(phat_A, Y) - L(phat_B, Y))) %>%
   {sum((.)$delta_n ^ 2) / nsamp * ngame}
 
-temp <- df_equ %>% group_by(grid) %>% group_split()
+temp <- df_equ %>% group_split(grid, .keep = FALSE)
 
 eigV_hat <- lapply(1:nsamp, function(i) {
   sapply(1:nsamp, function(j) {
@@ -143,8 +143,6 @@ eigV_hat <- lapply(1:nsamp, function(i) {
   {
     (.) / nsamp
   }
-
-
 
 
 
