@@ -4,11 +4,9 @@
 \alias{calc_eig}
 \title{TBA}
 \usage{
-calc_eig(cent = FALSE, df, n_eig = 10, ngame, nsamp)
+calc_eig(df, n_eig = 10, ngame, nsamp, grid = "grid", cent = FALSE)
 }
 \arguments{
-\item{cent}{A tibble contains 2 sets of probability and respective time grid}
-
 \item{df}{TBA}
 
 \item{n_eig}{TBA}
@@ -16,6 +14,10 @@ calc_eig(cent = FALSE, df, n_eig = 10, ngame, nsamp)
 \item{ngame}{TBA}
 
 \item{nsamp}{TBA}
+
+\item{grid}{TBA}
+
+\item{cent}{A tibble contains 2 sets of probability and respective time grid}
 }
 \value{
 A value of the test statistics and the associated p-value between two sets of real-time probabilistic forecasts

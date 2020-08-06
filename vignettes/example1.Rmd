@@ -164,7 +164,8 @@ eigV_til <- lapply(1:nsamp, function(i) {
     (.) / nsamp
   }
 
-
+print("eig center is ")
+eigV_hat
 MC_hat <- sapply(1:N_MC, function(x) {
   crossprod(eigV_hat, rchisq(D, df = 1))
 })
@@ -191,13 +192,11 @@ tibble(
 
 
 ```{r function wrappers}
-library(evalProbForecast)
 to_center <- FALSE
 
-
 ZZ <- calc_Z(df = df_equ, pA = "phat_A", pB = "phat_B", Y = "Y", nsamp = nsamp, ngame = ngame)
-eigg <- calc_eig(df = temp, n_eig = D, ngame = ngame, nsamp = nsamp, cent = to_center)
-oh <- calc_pval(Z, eig = eigg, quan = c(0.90, 0.95, 0.99), n_MC = N_MC)
+eigg <- calc_eig(df = df_equ, n_eig = D, ngame = ngame, nsamp = nsamp, grid = "grid", cent = to_center)
+oh <- calc_pval(ZZ, eig = eigg, quan = c(0.90, 0.95, 0.99), n_MC = N_MC)
 
 tibble(
   type = ifelse(to_center, "center", "non-center"),
