@@ -2,14 +2,14 @@
 #'
 #' calc_eig() returns TBA
 #'
-#' @param df TBA
-#' @param n_eig TBA
-#' @param nsamp TBA
-#' @param ngame TBA
-#' @param grid TBA
-#' @param cent A tibble contains 2 sets of probability and respective time grid
+#' @param df A data frame that contains at least two columns, difference and the grid.
+#' @param n_eig Number of leading eigenvalues to use
+#' @param nsamp Number of sample points in the time domain
+#' @param ngame Number of different instance
+#' @param grid Name of the grid in the data frame
+#' @param cent Whether to center the difference in probabilistic forecasts or not
 
-#' @return A value of the test statistics and the associated p-value between two sets of real-time probabilistic forecasts
+#' @return The leading `n_eig` eigenvalues of the covariance matrix to be used in the Delta test.
 #'
 #' @export
 

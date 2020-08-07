@@ -1,23 +1,24 @@
 #' Calculator of the test statistics of delta test
 #'
-#' calc_Z() returns TBA
+#' calc_Z() returns a value of the test statistics of the delta test.
 #'
-#' @param df A tibble contains 2 sets of probability and respective time grid
-#' @param pA TBA
-#' @param pB TBA
-#' @param Y TBA
-#' @param grid TBA
-#' @param nsamp TBA
-#' @param ngame TBA
-#' @param L Logical of whether to centre the data or not
+#' @param df A data frame that contains the following columns: Y, pA, pB, and grid
+#' @param pA Name of the probabilistic forecasts from the first method
+#' @param pB Name of the probabilistic forecasts from the second method
+#' @param Y Name of the outcome variable
+#' @param grid Name of the grid
+#' @param nsamp Number of sample points in the time domain
+#' @param ngame Number of different instance
+#' @param L Loss function to evaluate the performance between two methods
 #'
-#' @return A value of the test statistics and the associated p-value between two sets of real-time probabilistic forecasts
+#' @return A value of the test statistics between two sets of real-time probabilistic forecasts
 #'
 #' @export
 
 
-calc_Z <- function(df, pA, pB, Y, grid, nsamp, ngame, L = function(x,y) (x-y)^2){
-  df %>% group_by(grid) %>%
-    summarise(delta_n = mean(L(!!sym(pA), !!sym(Y)) - L(!!sym(pB), !!sym(Y)))) %>%
+calc_Z <- function(df, pA, pB, Y, grid = "grid", nsamp, ngame, L = function(x,y) (x-y)^2){
+  df %>% dplyr::select(!!sym(grid), !!sym(Y), !!sym(pA), !!sym(pB)) %>%
+    group_by(!!sym(grid)) %>%
+    summarise(delta_n = mean(L(!!sym(pA), !!sym(Y)) - L(!!sym(pB), !!sym(Y))), .groups = "drop") %>%
     {sum((.)$delta_n ^ 2) / nsamp * ngame}
 }

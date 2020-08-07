@@ -52,7 +52,7 @@ ngame <- 100 # number of games
 #' Parameter for generating the eigenvalues, and p-values
 D <- 10 # Number of eigenvalues to keep
 N_MC <- 5000 # for simulating the p-value
-
+library(tibble)
 library(rlist)
 
 L <- function(x, y) {
@@ -193,7 +193,8 @@ tibble(
 to_center <- FALSE
 
 ZZ <- calc_Z(df = df_equ, pA = "phat_A", pB = "phat_B", Y = "Y", nsamp = nsamp, ngame = ngame)
-eigg <- calc_eig(df = df_equ, n_eig = D, ngame = ngame, nsamp = nsamp, grid = "grid", cent = to_center)
+eigg <- calc_eig(df = df_equ, n_eig = D, ngame = ngame, 
+                 nsamp = nsamp, grid = "grid", cent = to_center)
 oh <- calc_pval(ZZ, eig = eigg, quan = c(0.90, 0.95, 0.99), n_MC = N_MC)
 
 

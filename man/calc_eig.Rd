@@ -7,20 +7,20 @@
 calc_eig(df, n_eig = 10, ngame, nsamp, grid = "grid", cent = FALSE)
 }
 \arguments{
-\item{df}{TBA}
+\item{df}{A data frame that contains at least two columns, difference and the grid.}
 
-\item{n_eig}{TBA}
+\item{n_eig}{Number of leading eigenvalues to use}
 
-\item{ngame}{TBA}
+\item{ngame}{Number of different instance}
 
-\item{nsamp}{TBA}
+\item{nsamp}{Number of sample points in the time domain}
 
-\item{grid}{TBA}
+\item{grid}{Name of the grid in the data frame}
 
-\item{cent}{A tibble contains 2 sets of probability and respective time grid}
+\item{cent}{Whether to center the difference in probabilistic forecasts or not}
 }
 \value{
-A value of the test statistics and the associated p-value between two sets of real-time probabilistic forecasts
+The leading \code{n_eig} eigenvalues of the covariance matrix to be used in the Delta test.
 }
 \description{
 calc_eig() returns TBA

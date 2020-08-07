@@ -13,7 +13,8 @@ Authors@R: c(
            family = "Dubin",
            role =  c("ctb", "ths"))     
      )
-Description: This package provides the tools to evaluate the performance between two sets of probabilistic forecasts, under the square norm, along with the graphical representation.
+Description: 
+    This package provides the tools to evaluate the performance between two sets of probabilistic forecasts, under the square norm, along with the graphical representation.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

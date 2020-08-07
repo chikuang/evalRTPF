@@ -4,28 +4,37 @@
 \alias{calc_Z}
 \title{Calculator of the test statistics of delta test}
 \usage{
-calc_Z(df, pA, pB, Y, grid, nsamp, ngame, L = function(x, y) (x - y)^2)
+calc_Z(
+  df,
+  pA,
+  pB,
+  Y,
+  grid = "grid",
+  nsamp,
+  ngame,
+  L = function(x, y) (x - y)^2
+)
 }
 \arguments{
-\item{df}{A tibble contains 2 sets of probability and respective time grid}
+\item{df}{A data frame that contains the following columns: Y, pA, pB, and grid}
 
-\item{pA}{TBA}
+\item{pA}{Name of the probabilistic forecasts from the first method}
 
-\item{pB}{TBA}
+\item{pB}{Name of the probabilistic forecasts from the second method}
 
-\item{Y}{TBA}
+\item{Y}{Name of the outcome variable}
 
-\item{grid}{TBA}
+\item{grid}{Name of the grid}
 
-\item{nsamp}{TBA}
+\item{nsamp}{Number of sample points in the time domain}
 
-\item{ngame}{TBA}
+\item{ngame}{Number of different instance}
 
-\item{L}{Logical of whether to centre the data or not}
+\item{L}{Loss function to evaluate the performance between two methods}
 }
 \value{
-A value of the test statistics and the associated p-value between two sets of real-time probabilistic forecasts
+A value of the test statistics between two sets of real-time probabilistic forecasts
 }
 \description{
-calc_Z() returns TBA
+calc_Z() returns a value of the test statistics of the delta test.
 }
