@@ -1,4 +1,4 @@
-#' TBA
+#' Calculator for eigenvalues
 #'
 #' calc_eig() returns TBA
 #'

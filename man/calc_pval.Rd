@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_pval.R
 \name{calc_pval}
 \alias{calc_pval}
-\title{TBA}
+\title{Calculator of the p-values of the delta test}
 \usage{
 calc_pval(Z, eig, quan, n_MC = 5000)
 }

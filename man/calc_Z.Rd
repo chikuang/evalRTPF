@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_Z.R
 \name{calc_Z}
 \alias{calc_Z}
-\title{TBA}
+\title{Calculator of the test statistics of delta test}
 \usage{
 calc_Z(df, pA, pB, Y, grid, nsamp, ngame, L = function(x, y) (x - y)^2)
 }

@@ -1,4 +1,4 @@
-#' TBA
+#' Calculator of the p-values of the delta test
 #'
 #' calc_pval() returns TBA
 #'

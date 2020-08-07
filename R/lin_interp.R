@@ -1,4 +1,4 @@
-#' Linear Interpolation
+#' Linear Interpolation of real-time probabilistic forecasts
 #'
 #' lin_interp() returns the set of input probabilistic forecasts evaluated on the given grid
 #'

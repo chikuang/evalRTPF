@@ -1,4 +1,4 @@
-#' TBA
+#' Calculator for the Loss function and the corresponding variance
 #'
 #' calc_L_s2() returns TBA
 #'

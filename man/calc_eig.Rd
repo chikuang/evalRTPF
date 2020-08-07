@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_eig.R
 \name{calc_eig}
 \alias{calc_eig}
-\title{TBA}
+\title{Calculator for eigenvalues}
 \usage{
 calc_eig(df, n_eig = 10, ngame, nsamp, grid = "grid", cent = FALSE)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_L_s2.R
 \name{calc_L_s2}
 \alias{calc_L_s2}
-\title{TBA}
+\title{Calculator for the Loss function and the corresponding variance}
 \usage{
 calc_L_s2(
   df,

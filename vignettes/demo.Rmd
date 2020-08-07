@@ -1,5 +1,5 @@
 ---
-title: "Example 1"
+title: "Demo"
 author: | 
   | Chi-Kuang Yeh, Gregory Rice, Joel A. Dubin
   | University of Waterloo
@@ -13,7 +13,7 @@ output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{evalProbForecast}
+  %\VignetteIndexEntry{Demo}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -196,12 +196,18 @@ ZZ <- calc_Z(df = df_equ, pA = "phat_A", pB = "phat_B", Y = "Y", nsamp = nsamp, 
 eigg <- calc_eig(df = df_equ, n_eig = D, ngame = ngame, nsamp = nsamp, grid = "grid", cent = to_center)
 oh <- calc_pval(ZZ, eig = eigg, quan = c(0.90, 0.95, 0.99), n_MC = N_MC)
 
+
+temp <- calc_L_s2(df = df_equ, pA = "phat_A", pB = "phat_B")
+library(ggplot2)
+plot_pcb(df = temp)
+
 tibble(
   type = ifelse(to_center, "center", "non-center"),
   Z = ZZ,
-  "90%" = c(oh$quantile[1]),
-  "95%" = c(oh$quantile[2]),
-  "99%" = c(oh$quantile[3])
+  pval = oh$p_val,
+  "90%" = oh$quantile[1],
+  "95%" = oh$quantile[2],
+  "99%" = oh$quantile[3]
 )
 ```
 

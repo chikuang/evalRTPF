@@ -2,7 +2,7 @@
 % Please edit documentation in R/lin_interp.R
 \name{lin_interp}
 \alias{lin_interp}
-\title{Linear Interpolation}
+\title{Linear Interpolation of real-time probabilistic forecasts}
 \usage{
 lin_interp(prob, grid, outcome)
 }

@@ -1,4 +1,4 @@
-#' TBA
+#' Calculator of the test statistics of delta test
 #'
 #' calc_Z() returns TBA
 #'
