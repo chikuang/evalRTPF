@@ -1,11 +1,10 @@
 #' @keywords internal
 #' @import dplyr
+#' @import tidyr
 #' @import ggplot2
-#' @import tidyr
 #' @import purrr
-#' @import tidyr
-#' @importFrom stats ecdf rchisq approx qnorm
-#'
+#' @importFrom rlist list.rbind
+#' @importFrom stats ecdf rchisq approx qnorm pnorm runif
 
 "_PACKAGE"
 

@@ -36,7 +36,7 @@ require(tidyr)
 require(ggplot2)
 require(gridExtra)
 require(RSpectra)
-require(sde)
+require(rlist)
 ```
 
 ```{r, include = FALSE}
@@ -46,73 +46,21 @@ L <- function(x, y){
 ```
 
 ```{r}
+library(ggplot2)
+library(tibble)
+library(MASS)
 nsamp <- 100 # number of in-game events
 ngame <- 100 # number of games
 
 #' Parameter for generating the eigenvalues, and p-values
 D <- 10 # Number of eigenvalues to keep
 N_MC <- 5000 # for simulating the p-value
-library(tibble)
-library(rlist)
-
 L <- function(x, y) {
   return((x - y) ^ 2)
 }
 
-# New ---------------------------------------------------------------------
-
-df_gen <- function(N, Ngame) {
-  a = 1.0
-  b = 0.2
-  # a = 1.0; b = 1.5
-  uu <- a * runif(Ngame,-1,+1) + b
-  xt <- sapply(1:Ngame, function(x) {
-    tt <- seq(0, 1, 1 / N)
-    wt <- sde::BM(x = 0,
-                  t0 = 0,
-                  T = 1,
-                  N = N) %>% as.numeric() ##
-    uu[x] * tt + wt
-  })  # nsamp x ngame
-  
-  Yn <- ifelse(xt[N + 1,] > 0, 1, 0)
-  
-  
-  w1 <- sapply(1:Ngame, function(x) {
-    sde::BM(x = 0,
-            t0 = 0,
-            T = 1,
-            N = N) %>% as.numeric()
-  })
-  w2 <- sapply(1:Ngame, function(x) {
-    sde::BM(x = 0,
-            t0 = 0,
-            T = 1,
-            N = N) %>% as.numeric()
-  })
-  
-  lapply(1:(N + 1), function(k) {
-    tibble(
-      game = 1:Ngame,
-      u = uu,
-      Xt = xt[k,],
-      grid = (k - 1) / N,
-      Y = Yn,
-      W1 = w1[k,],
-      W2 = w2[k,]
-    ) # each sample point
-  }) %>% list.rbind() %>% mutate(
-    signXt = sign(Xt),
-    phat_A = pnorm(u * (1 - grid) + Xt + W1,
-                   sd = sqrt(1 - grid)),
-    phat_B = pnorm(u * (1 - grid) + Xt + W2,
-                   sd = sqrt(1 - grid))
-  )
-}
-
-
 # Data generation ---------------------------------------------------------=
-df_equ <-  df_gen(N = nsamp, Ngame = ngame) %>%
+df_equ <-  evalProbForecast::df_gen(N = nsamp, Ngame = ngame) %>%
   group_by(grid) %>%
   mutate(
     p_bar_12 = mean(phat_A - phat_B),
@@ -133,7 +81,7 @@ eigV_hat <- lapply(1:nsamp, function(i) {
     as.numeric(temp[[i]]$diff_non_cent %*% temp[[j]]$diff_non_cent / ngame)
   })
 }) %>% list.rbind %>% {
-  RSpectra::eigs_sym(
+  eigs_sym(
     A = (.),
     k = D,
     which = "LM",
@@ -151,7 +99,7 @@ eigV_til <- lapply(1:nsamp, function(i) {
     as.numeric(temp[[i]]$diff_cent %*% temp[[j]]$diff_cent / ngame)
   })
 }) %>% list.rbind %>% {
-  RSpectra::eigs_sym(
+  eigs_sym(
     A = (.),
     k = D,
     which = "LM",
@@ -162,8 +110,6 @@ eigV_til <- lapply(1:nsamp, function(i) {
     (.) / nsamp
   }
 
-print("eig center is ")
-eigV_hat
 MC_hat <- sapply(1:N_MC, function(x) {
   crossprod(eigV_hat, rchisq(D, df = 1))
 })
@@ -180,9 +126,12 @@ q_90_til <- quantile(MC_til, 0.90)
 q_95_til <- quantile(MC_til, 0.95)
 q_99_til <- quantile(MC_til, 0.99)
 
+p_hat <- 1 - ecdf(MC_hat)(Z)
+
 tibble(
   type  = c("non-center", "center"),
   Z = rep(Z, 2),
+  "pval" = c(p_hat, p_hat),
   "90%" = c(q_90_hat, q_90_til),
   "95%" = c(q_95_hat, q_95_til),
   "99%" = c(q_99_hat, q_99_til))
@@ -199,7 +148,7 @@ oh <- calc_pval(ZZ, eig = eigg, quan = c(0.90, 0.95, 0.99), n_MC = N_MC)
 
 
 temp <- calc_L_s2(df = df_equ, pA = "phat_A", pB = "phat_B")
-library(ggplot2)
+
 plot_pcb(df = temp)
 
 tibble(
