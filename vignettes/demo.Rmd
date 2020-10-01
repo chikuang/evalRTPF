@@ -26,7 +26,6 @@ knitr::opts_chunk$set(
 options(digits = 3)
 ```
 
-
 ```{r load, message = F, include = FALSE}
 # required dependencies
 require(evalProbForecast)

@@ -35,6 +35,6 @@ Suggests:
     rmarkdown (>= 2.1.0),
     gridExtra (>= 2.3.0),
     MASS (>= 7.3-52),
-    tibble (>= 3.0.3)
+    tibble (>= 3.0.3),
     sde
 VignetteBuilder: knitr
