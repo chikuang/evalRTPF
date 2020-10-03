@@ -1,5 +1,5 @@
-Package: evalProbForecast
-Title: Evaluate the performance between two probabilistic forecasts 
+Package: evaRTPFor
+Title: Evaluate the discrepancy between two continuously-updated probabilistic forecasts 
 Version: 0.0.0.9000
 Authors@R: c(
     person(given = "Chi-Kuang",
@@ -14,7 +14,9 @@ Authors@R: c(
            role =  c("ctb", "ths"))     
      )
 Description: 
-    This package provides the tools to evaluate the performance between two sets of probabilistic forecasts, under the square norm, along with the graphical representation.
+    This package provides the evaluating tools to on the performance between two 
+    or more competing continuously-updated probabilistic forecasts, under the 
+    square norm, along with an easy-to-interpret graphical representation.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

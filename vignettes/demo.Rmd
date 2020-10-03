@@ -28,17 +28,16 @@ options(digits = 3)
 
 ```{r load, message = F, include = FALSE}
 # required dependencies
-require(evalProbForecast)
-
 require(dplyr)
 require(tidyr)
-require(ggplot2)
+# require(ggplot2)
 require(gridExtra)
 require(RSpectra)
 require(rlist)
 ```
 
 ```{r, include = FALSE}
+library(evaRTPFor)
 L <- function(x, y){
   return ( (x - y)^2 ) 
 }
@@ -59,7 +58,7 @@ L <- function(x, y) {
 }
 
 # Data generation ---------------------------------------------------------=
-df_equ <-  evalProbForecast::df_gen(N = nsamp, Ngame = ngame) %>%
+df_equ <-  df_gen(N = nsamp, Ngame = ngame) %>%
   group_by(grid) %>%
   mutate(
     p_bar_12 = mean(phat_A - phat_B),
