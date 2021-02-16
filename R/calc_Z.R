@@ -16,9 +16,10 @@
 #' @export
 
 
-calc_Z <- function(df, pA, pB, Y, grid = "grid", nsamp, ngame, L = function(x,y) (x-y)^2){
+calc_Z <- function(df, pA = "phat_1", pB = "phat_2", Y, grid = "grid", nsamp, ngame, 
+                   L = function(x,y) (x-y)^2){
   df %>% dplyr::select(!!sym(grid), !!sym(Y), !!sym(pA), !!sym(pB)) %>%
     group_by(!!sym(grid)) %>%
     summarise(delta_n = mean(L(!!sym(pA), !!sym(Y)) - L(!!sym(pB), !!sym(Y))), .groups = "drop") %>%
-    {sum((.)$delta_n ^ 2) / nsamp * ngame}
+    summarise(sum(delta_n^2)/nsamp*ngame) %>% pull()
 }

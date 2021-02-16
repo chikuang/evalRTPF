@@ -1,5 +1,5 @@
-Package: evaRTPFor
-Title: Evaluate the discrepancy between two continuously-updated probabilistic forecasts 
+Package: evalRTPF
+Title: Evaluate the discrepancy between two Real-Time updated Probabilistic Forecasts 
 Version: 0.0.0.9000
 Authors@R: c(
     person(given = "Chi-Kuang",
@@ -25,7 +25,7 @@ Roxygen: list(markdown = TRUE)
 Imports:
     dplyr (>= 1.0.1),
     ggplot2 (>= 3.3.2),
-    stats (>= 4.0.2),
+    stats (>= 4.0.3),
     tidyr (>= 1.1.1),
     RSpectra (>= 0.16.0),
     rlist (>= 0.4.6.1),

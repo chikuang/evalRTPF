@@ -1,4 +1,4 @@
-# **evalProbForecast:** To evaluate the performance between two sets of competing real-time probabilistic forecasts
+# **evalRTPF:** To evaluate the performance between two sets of competing real-time probabilistic forecasts
 
 *Chi-Kuang Yeh, Gregory Rice, Joel A. Dubin*
 

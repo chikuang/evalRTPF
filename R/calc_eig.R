@@ -15,7 +15,6 @@
 
 calc_eig <- function(df, n_eig = 10, ngame, nsamp, grid = "grid", cent = FALSE){
   diff <- ifelse(cent, "diff_cent", "diff_non_cent")
-
   df_list <- df %>% dplyr::select(!!sym(grid), !!sym(diff)) %>% group_split(!!sym(grid), .keep = FALSE)
   df_vec <- lapply(seq_along(df_list), function(x){
     df_list[[x]] %>% unlist() %>% as.vector()
