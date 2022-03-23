@@ -12,7 +12,9 @@ We develop methods to quantify the difference between two sets of probabilistic 
 
 Currently evalRTPF is only available in R. We plan to develop Python, Julia and/or Matlab versions in the future.
 
-`devtools::install_github("chikuang/evalRTPF")`
+```r
+devtools::install_github("chikuang/evalRTPF")
+```
 
 ## Examples
 
