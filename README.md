@@ -1,6 +1,6 @@
-# EVALuating Real-Time Probablistic Forecast
+# evalRTPF: EVALuating Real-Time Probabilistic Forecast
 
-Chi-Kuang Yeh, Gregory Rice and Joel A. Dubin
+*[Chi-Kuang Yeh](https://chikuang.github.io/), [Gregory Rice](https://uwaterloo.ca/statistics-and-actuarial-science/profiles/greg-rice), [Joel A. Dubin](https://uwaterloo.ca/statistics-and-actuarial-science/profiles/joel-dubin)*
 
 ---
 
@@ -22,4 +22,4 @@ Will be added soon.
 
 ## Reference 
 
-1. [Evaluating real-time probabilistic forecasts with application to National Basketball Association outcome prediction](https://www.tandfonline.com/doi/abs/10.1080/00031305.2021.1967781?journalCode=utas20)
+* Yeh, C.-K., Rice, G. & Dubin, J.A. (2022). [Evaluating real-time probabilistic forecasts with application to National Basketball Association outcome prediction](https://www.tandfonline.com/doi/abs/10.1080/00031305.2021.1967781?journalCode=utas20), *The American Statistician*, 62, 75-92. 
