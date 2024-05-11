@@ -2,6 +2,8 @@
 
 *[Chi-Kuang Yeh](https://chikuang.github.io/), [Gregory Rice](https://uwaterloo.ca/statistics-and-actuarial-science/profiles/greg-rice), [Joel A. Dubin](https://uwaterloo.ca/statistics-and-actuarial-science/profiles/joel-dubin)*
 
+*May 10, 2024*
+
 ---
 
 ## Description
@@ -19,6 +21,12 @@ devtools::install_github("chikuang/evalRTPF")
 ## Examples
 
 Will be added soon.
+
+## TODO
++ [ ] Add examples with graphical illustrations
++ [ ] Add detailed descriptions
++ [ ] Speed-up with RCPP components
++ [ ] Upload to CRAN
 
 ## Reference 
 
