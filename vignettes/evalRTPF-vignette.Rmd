@@ -1,5 +1,6 @@
 ---
-title: "Demo"
+title: "evalRTPF guide"
+subtitle: "EVALuating Real-Time Probabilistic Forecast"
 author: | 
   | Chi-Kuang Yeh, Gregory Rice, Joel A. Dubin
   | University of Waterloo
@@ -37,7 +38,7 @@ require(rlist)
 ```
 
 ```{r, include = FALSE}
-library(evaRTPFor)
+library(evalRTPF)
 L <- function(x, y){
   return ( (x - y)^2 ) 
 }
