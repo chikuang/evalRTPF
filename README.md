@@ -2,7 +2,11 @@
 
 *[Chi-Kuang Yeh](https://chikuang.github.io/), [Gregory Rice](https://uwaterloo.ca/statistics-and-actuarial-science/profiles/greg-rice), [Joel A. Dubin](https://uwaterloo.ca/statistics-and-actuarial-science/profiles/joel-dubin)*
 
-*May 10, 2024*
+*May 14, 2024*
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/chikuang/evalRTPF/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/chikuang/evalRTPF/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
 
 ---
 
