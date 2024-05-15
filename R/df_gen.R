@@ -7,7 +7,8 @@
 #' @param type TBA
 #' @param a TBA
 #' @param b TBA
-
+#' 
+#' @importFrom MASS mvrnorm
 #'
 #' @return TBA
 #'

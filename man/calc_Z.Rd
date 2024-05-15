@@ -6,8 +6,8 @@
 \usage{
 calc_Z(
   df,
-  pA,
-  pB,
+  pA = "phat_1",
+  pB = "phat_2",
   Y,
   grid = "grid",
   nsamp,
